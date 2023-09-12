@@ -9,16 +9,17 @@ const game = new Game(canvas, ctx);
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Draws the subject
+
+    // Draws the subject and invaders
     game.startState();
-    // Draws invaders and missiles
-    if (game.gameStarts) {
-        game.createInvaderList();
-        game.draw();
-    }
-    // Update the Scores
+    game.createInvaderList();
+    game.draw();
+
+    // Update the game state
     game.update();
-    window.requestAnimationFrame(draw);
+
+    // Request the next animation frame to keep the loop going
+    requestAnimationFrame(draw);
 }
 
 draw();

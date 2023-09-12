@@ -6,6 +6,7 @@ class Block {
         this.width = width;
         this.img = new Image(width, height);
         this.img.src = imgsrc;
+        this.imgsrc = imgsrc;
     }
 
     draw(ctx) {

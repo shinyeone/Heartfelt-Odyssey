@@ -6,8 +6,9 @@ import Missile from "./Missile.js";
 // List of sounds for the game
 const backgroundMusic = new Audio("./assets/bg_music.mp3");
 const shoot = new Audio("./assets/chime.mp3");
-const explosion = new Audio("./assets/explosion.wav");
+const explosion = new Audio("./assets/fairy2.mp3");
 const punch = new Audio("./assets/punch.wav");
+const dreamy = new Audio("./assets/dreamy.mp3");
 
 // List of items 
 const arrow = "./assets/arrow.png";
@@ -41,7 +42,8 @@ class Game {
             this.invadersShouldStart = true;
             this.createInvaderList(); // Create an initial invader after 10 seconds
         }, 2000); // 15000 milliseconds = 15 seconds
-            
+
+
 
         // Create a missiles array
         this.missiles = [];
@@ -107,43 +109,36 @@ class Game {
         this.subject.move(this.canvas.width);
     }
 
-    // Create an Invader array
     createInvaderList() {
         if (!this.invadersShouldStart) {
             return; // Don't create invaders until the timer is up
         }
-
-        // Adjust the maximum number of invaders you want to appear on the screen
-        const maxInvaders = 5;
-        const currentInvaders = this.invaders.length;
-        if (currentInvaders >= maxInvaders) {
-            return; // Limit the number of invaders on the screen
-        }
-
+    
         const rand = Math.random();
         // Adjust these probabilities as needed to control the appearance frequency
-        if (rand < 0.001) { // 0.01% chance of heart
+        if (rand < 0.0001) { // 0.01% chance of heart
             this.invaders.push(new Invader(
                 "./assets/heart.png",
                 (this.canvas.width - 10) * Math.random(),
                 this.canvas.height - 600,
                 42,
                 42,
-                Math.floor(Math.random(),
-                false)
+                Math.random() > 0.5 // 50% chance
             ));
-        } else if (rand < 0.006) { // 1% chance of broken heart
+        } else if (rand < 0.005) { // 0.5% chance of broken heart
             this.invaders.push(new Invader(
                 "./assets/broken-heart.png",
                 (this.canvas.width - 10) * Math.random(),
                 this.canvas.height - 600,
                 42,
                 42,
-                Math.floor(Math.random(),
-                false)
+                Math.random() > 0.5 // 50% chance
             ));
         }
+        console.log(this.invaders);
     }
+    
+    
 
     draw() {
         if (!this.gameIsOver) {
@@ -167,77 +162,118 @@ class Game {
     
             // Draw the message
             if (currentItem === ripple) {
-                this.ctx.fillText("Current item: Ripple", 8, 60);
+                this.ctx.fillText("Current item: Ripple", 8, 80);
             } else {
-                this.ctx.fillText("Current item: Arrow", 8, 60);
+                this.ctx.fillText("Current item: Arrow", 8, 80);
             }
         }
     }
-    
-    
-
 
     update() {
         if (!this.gameIsOver) {
             for (let i = 0; i < this.invaders.length; i++) {
                 // Game is over if the invader reaches the bottom of the screen
-                if (this.invaders[i].y > this.canvas.height) {
-                    this.invaders.splice(this.invaders.indexOf(this.invaders[i], 1));
+                if (this.invaders[i].y > this.canvas.height - this.invaders[i].height) {
+                    this.invaders.splice(i, 1);
                     this.gameIsOver = true;
+                    break;
                 }
             }
-
-            this.missiles.forEach((missile) => {
-                this.invaders.forEach((invader) => {
+    
+            this.missiles.forEach((missile, missileIndex) => {
+                let collisionOccurred = false; // Flag to keep track if a collision occurred
+                for (let i = 0; i < this.invaders.length; i++) {
+                    const invader = this.invaders[i];
+            
                     // Collision happens
                     if (missile.collides(invader)) {
+                        console.log(invader);
                         // Check if the missile type matches the invader type
-                        if ((currentItem === ripple && invader.imgsrc === "./assets/broken-heart.png")) {
+                        if (
+                            currentItem === ripple &&
+                            invader.imgsrc === "./assets/broken-heart.png"
+                        ) {
                             // Ripple hits broken heart - play healing sound
                             explosion.play();
-                            this.invaders.splice(this.invaders.indexOf(invader), 1);
+                            console.log("ripple hits broken heart")
+                            this.invaders.splice(i, 1);
                             this.numDeadInvaders++;
-                            // Get one item
                             if (this.numMissiles < 10) {
                                 this.numMissiles++;
                             }
-                        } else if (currentItem === arrow && invader.imgsrc === "./assets/broken-heart.png") {
+
+
+                        } else if (
+                            currentItem === arrow &&
+                            invader.imgsrc === "./assets/broken-heart.png"
+                        ) {
                             // Arrow hits the broken heart - play punch sound
-                           punch.play();
-                           this.invaders.splice(this.invaders.indexOf(invader), 1);
-                           this.numHeartBreaks++;
-                        } else if ((currentItem === arrow && invader.imgsrc === "./assets/heart.png")) {
+                            punch.play();
+                            console.log("arrow hits broken heart")
+                            this.invaders.splice(i, 1);
+                            this.numHeartBreaks++;
+
+                        } else if (
+                            currentItem === arrow &&
+                            invader.imgsrc === "./assets/heart.png"
+                        ) {
                             // Arrow hits the true love heart - play dreamy sound
-                            // play dreamy sound
-                            this.invaders.splice(this.invaders.indexOf(invader), 1);
+                            dreamy.play();
+                            this.invaders.splice(i, 1);
                         }
+            
                         invader.isHit = true;
-
-
-                        // Missile exits the canvas
-                    } else if (missile.y < 0) {
-                        if (this.numMissiles < 10) {
-                            this.numMissiles++;
-                        }
-                        this.missiles.splice(this.missiles.indexOf(missile), 1);
+                        collisionOccurred = true;
+                        break; // Stop checking for other collisions for this missile
                     }
-                });
+                }
+            
+                if (collisionOccurred) {
+                    // Remove the missile after a collision
+                    this.missiles.splice(missileIndex, 1);
+                }
             });
             
+    
+            // Remove the missile if it exits the canvas
+           // Remove the missile if it exits the canvas and add one missile in that case
+           this.missiles = this.missiles.filter(missile => {
+            if (missile.y <= 0) {
+                if (this.numMissiles < 10) {
+                    this.numMissiles++;
+                }
+                return false;
+            }
+            return true;
+            });
         }
-
-        // Always updated on screen 
+    
+        // Always updated on screen
         this.ctx.font = "16px Arial";
         this.ctx.fillStyle = "#0095DD";
-        this.ctx.fillText("Invaders shot down: " + this.numDeadInvaders, 8, 20);
+        this.ctx.fillText(
+            "Invaders shot down: " + this.numDeadInvaders,
+            8,
+            20
+        );
+        this.ctx.fillText(
+            "Heartbreaks: " + this.numHeartBreaks,
+            8,
+            40
+        );
         if (this.gameIsOver) {
-            this.ctx.fillText("Game Over!", 8, 40);
+            this.ctx.fillText("Game Over!", 8, 60);
             this.subject.x = this.canvas.width / 2 - 25;
             this.subject.y = this.canvas.height - 60;
             backgroundMusic.pause();
         } else {
-            this.ctx.fillText("Missiles remaining: " + this.numMissiles, 8, 40);
+            this.ctx.fillText("Missiles remaining: " + this.numMissiles, 8, 60);
         }
     }
-}
-export default Game;
+    
+    }
+    
+    
+    
+    export default Game;
+    
