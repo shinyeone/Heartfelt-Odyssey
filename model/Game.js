@@ -15,6 +15,7 @@ const arrow = "./assets/arrow.png";
 const ripple = "./assets/ripple.png";
 let currentItem = ripple;
 
+let textDisplayTime = 0; // Initialize it to 0.
 
 
 class Game {
@@ -135,7 +136,6 @@ class Game {
                 Math.random() > 0.5 // 50% chance
             ));
         }
-        console.log(this.invaders);
     }
     
     
@@ -213,6 +213,7 @@ class Game {
                             this.invaders.splice(i, 1);
                             this.numHeartBreaks++;
 
+
                         } else if (
                             currentItem === arrow &&
                             invader.imgsrc === "./assets/heart.png"
@@ -252,7 +253,7 @@ class Game {
         this.ctx.font = "16px Arial";
         this.ctx.fillStyle = "#0095DD";
         this.ctx.fillText(
-            "Invaders shot down: " + this.numDeadInvaders,
+            "Broken Hearts Healed: " + this.numDeadInvaders,
             8,
             20
         );
@@ -267,7 +268,7 @@ class Game {
             this.subject.y = this.canvas.height - 60;
             backgroundMusic.pause();
         } else {
-            this.ctx.fillText("Missiles remaining: " + this.numMissiles, 8, 60);
+            this.ctx.fillText("Tolerance capacity remaining: " + this.numMissiles, 8, 60);
         }
     }
     
