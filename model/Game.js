@@ -40,7 +40,7 @@ class Game {
         setTimeout(() => {
             this.invadersShouldStart = true;
             this.createInvaderList(); // Create an initial invader after 10 seconds
-        }, 2000); // 15000 milliseconds = 15 seconds
+        }, 15000); // 15000 milliseconds = 15 seconds
 
 
 
