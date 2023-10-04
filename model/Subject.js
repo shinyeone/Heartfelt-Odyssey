@@ -1,5 +1,5 @@
 import Sprite from "./Sprite.js";
-import Missile from "./Missile.js";
+import Item from "./Item.js";
 
 
 class Subject extends Sprite {

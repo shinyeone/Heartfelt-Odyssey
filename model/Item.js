@@ -1,6 +1,6 @@
 import Sprite from "./Sprite.js";
 
-class Missile extends Sprite {
+class Item extends Sprite {
     constructor(imgsrc, x, y, width, height) {
         super(imgsrc, x, y, width, height, 0, 0);
         this.visible = true;
@@ -27,4 +27,4 @@ class Missile extends Sprite {
     }
 }
 
-export default Missile;
+export default Item;

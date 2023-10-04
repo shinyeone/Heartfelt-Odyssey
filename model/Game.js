@@ -1,6 +1,6 @@
 import Invader from "./Invader.js";
 import Subject from "./Subject.js";
-import Missile from "./Missile.js";
+import Item from "./Item.js";
 
 
 // List of sounds for the game
@@ -44,9 +44,9 @@ class Game {
 
 
 
-        // Create a missiles array
-        this.missiles = [];
-        this.numMissiles = 10;
+        // Create a items array
+        this.items = [];
+        this.numItems = 10;
         document.addEventListener("keydown", this.keyDownHandler.bind(this));
 
         // Create an invaders array
@@ -56,32 +56,32 @@ class Game {
     }
 
     keyDownHandler(e) {
-        // Each space bar press creates a missile
+        // Each space bar press creates a item
         if (e.key === " ") {
-            if (this.numMissiles > 0) {
+            if (this.numItems > 0) {
                 if (currentItem === ripple) {
-                    let missile = new Missile(
+                    let item = new Item(
                         currentItem,
                         this.subject.x + 10 ,
                         this.subject.y - 20,
                         30,
                         45
                     );
-                    this.missiles.push(missile);
+                    this.items.push(item);
                     shoot.play();
-                    this.numMissiles--;
+                    this.numItems--;
                 } else {
                     // Arrow (Limited to 5)
-                    let missile = new Missile(
+                    let item = new Item(
                         currentItem,
                         this.subject.x + 10 ,
                         this.subject.y,
                         10,
                         35
                     );
-                    this.missiles.push(missile);
+                    this.items.push(item);
                     shoot.play();
-                    this.numMissiles--;
+                    this.numItems--;
                 }
             }
         }
@@ -149,10 +149,10 @@ class Game {
                 }
             }
     
-            // draws the missiles (ripples)
-            for (let j = 0; j < this.missiles.length; j++) {
-                this.missiles[j].draw(this.ctx);
-                this.missiles[j].move();
+            // draws the items (ripples)
+            for (let j = 0; j < this.items.length; j++) {
+                this.items[j].draw(this.ctx);
+                this.items[j].move();
             }
     
             // Draw the item change message
@@ -171,7 +171,7 @@ class Game {
     update() {
 
         if (!this.gameStarts) {
-            this.ctx.fillText("Press Left or Right Key to Start the Game", 8, 100);
+            this.ctx.fillText("Press Left or Right Key to Start the Game", 90, 300);
         }
         if (!this.gameIsOver) {
             for (let i = 0; i < this.invaders.length; i++) {
@@ -183,15 +183,15 @@ class Game {
                 }
             }
     
-            this.missiles.forEach((missile, missileIndex) => {
+            this.items.forEach((item, itemIndex) => {
                 let collisionOccurred = false; // Flag to keep track if a collision occurred
                 for (let i = 0; i < this.invaders.length; i++) {
                     const invader = this.invaders[i];
             
                     // Collision happens
-                    if (missile.collides(invader)) {
+                    if (item.collides(invader)) {
                         console.log(invader);
-                        // Check if the missile type matches the invader type
+                        // Check if the item type matches the invader type
                         if (
                             currentItem === ripple &&
                             invader.imgsrc === "./assets/broken-heart.png"
@@ -201,8 +201,8 @@ class Game {
                             console.log("ripple hits broken heart")
                             this.invaders.splice(i, 1);
                             this.numDeadInvaders++;
-                            if (this.numMissiles < 10) {
-                                this.numMissiles++;
+                            if (this.numItems < 10) {
+                                this.numItems++;
                             }
 
 
@@ -228,23 +228,23 @@ class Game {
             
                         invader.isHit = true;
                         collisionOccurred = true;
-                        break; // Stop checking for other collisions for this missile
+                        break; // Stop checking for other collisions for this item
                     }
                 }
             
                 if (collisionOccurred) {
-                    // Remove the missile after a collision
-                    this.missiles.splice(missileIndex, 1);
+                    // Remove the item after a collision
+                    this.items.splice(itemIndex, 1);
                 }
             });
             
     
-            // Remove the missile if it exits the canvas
-           // Remove the missile if it exits the canvas and add one missile in that case
-           this.missiles = this.missiles.filter(missile => {
-            if (missile.y <= 0) {
-                if (this.numMissiles < 10) {
-                    this.numMissiles++;
+            // Remove the item if it exits the canvas
+           // Remove the item if it exits the canvas and add one item in that case
+           this.items = this.items.filter(item => {
+            if (item.y <= 0) {
+                if (this.numItems < 10) {
+                    this.numItems++;
                 }
                 return false;
             }
@@ -271,7 +271,7 @@ class Game {
             this.subject.y = this.canvas.height - 60;
             backgroundMusic.pause();
         } else {
-            this.ctx.fillText("Tolerance capacity remaining: " + this.numMissiles, 8, 60);
+            this.ctx.fillText("Tolerance capacity remaining: " + this.numItems, 8, 60);
         }
     }
     

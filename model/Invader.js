@@ -29,8 +29,8 @@ class Invader extends Sprite {
         }
     }
 
-    collides(missile) {
-        if (this.intersects(missile)) {
+    collides(item) {
+        if (this.intersects(item)) {
             return true;
         }
         return false;
