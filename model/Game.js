@@ -11,11 +11,9 @@ const punch = new Audio("./assets/punch.wav");
 const dreamy = new Audio("./assets/dreamy.mp3");
 
 // List of items 
-const arrow = "./assets/arrow.png";
+const arrow = "./assets/arrow.png";[]
 const ripple = "./assets/ripple.png";
 let currentItem = ripple;
-
-let textDisplayTime = 0; // Initialize it to 0.
 
 
 class Game {
@@ -73,6 +71,7 @@ class Game {
                     shoot.play();
                     this.numMissiles--;
                 } else {
+                    // Arrow (Limited to 5)
                     let missile = new Missile(
                         currentItem,
                         this.subject.x + 10 ,
@@ -150,7 +149,7 @@ class Game {
                 }
             }
     
-            // draws the missiles
+            // draws the missiles (ripples)
             for (let j = 0; j < this.missiles.length; j++) {
                 this.missiles[j].draw(this.ctx);
                 this.missiles[j].move();
@@ -170,6 +169,10 @@ class Game {
     }
 
     update() {
+
+        if (!this.gameStarts) {
+            this.ctx.fillText("Press Left or Right Key to Start the Game", 8, 100);
+        }
         if (!this.gameIsOver) {
             for (let i = 0; i < this.invaders.length; i++) {
                 // Game is over if the invader reaches the bottom of the screen

@@ -101,8 +101,11 @@ canvas {
 }
 
 .stars {
-  background: #7BA6C6 url(/assets/HDR.png) repeat top center;
+  background: transparent url(/assets/Seoul.png) repeat top center;
   z-index: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover; /* Add this line */
 }
 
 .twinkling {
