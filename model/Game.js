@@ -46,7 +46,7 @@ class Game {
 
         // Create a items array
         this.items = [];
-        this.numItems = 10;
+        this.numItems = 15;
         document.addEventListener("keydown", this.keyDownHandler.bind(this));
 
         // Create an invaders array
@@ -116,7 +116,7 @@ class Game {
     
         const rand = Math.random();
         // Adjust these probabilities as needed to control the appearance frequency
-        if (rand < 0.0001) { // 0.01% chance of heart
+        if (rand < 0.0005) { // 0.01% chance of heart
             this.invaders.push(new Invader(
                 "./assets/heart.png",
                 (this.canvas.width - 10) * Math.random(),
@@ -266,12 +266,12 @@ class Game {
             40
         );
         if (this.gameIsOver) {
-            this.ctx.fillText("Game Over!", 8, 60);
+            this.ctx.fillText("Game Over! But Don't Lose Hope", 8, 60);
             this.subject.x = this.canvas.width / 2 - 25;
             this.subject.y = this.canvas.height - 60;
             backgroundMusic.pause();
         } else {
-            this.ctx.fillText("Tolerance capacity remaining: " + this.numItems, 8, 60);
+            this.ctx.fillText("Tolerance Capacity Remaining: " + this.numItems, 8, 60);
         }
     }
     
